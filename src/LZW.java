@@ -46,27 +46,22 @@ public class LZW {
         int evictions = 0;
         boolean reset;
         int cnt = 0;
+        System.out.println("starting compression");
         for (char c : fullText.toCharArray()) {
             cnt++;
             String currentPlusC = current + c;
             if (dictionary.get(currentPlusC) != null) {
                 current = currentPlusC;
+                System.out.println("added " + currentPlusC + ", no evictions");
             } else {
                 // Eviction occurs
                 if (dictionary.get(current) != null) {
                     compressedList.add(dictionary.get(current));
+                    System.out.println("added " + currentPlusC + ", with evictions");
                 }
 
                 reset = dictionary.put(currentPlusC, nextCode++);
-                // if (!reset) {
-                //     compressedList.add(dictionary.get(""));
-                //     for (int i = 0; i < RESTART; i++) {
-                //         dictionary.put("" + (char) i, i);
-                //     }
-                // }
-   
-                // Update eviction statistics
-                if (dictionary.size() >= (1 << codeLength) && codeLength < MAX_CODE_LENGTH) {
+            if (dictionary.size() >= (1 << codeLength) && codeLength < MAX_CODE_LENGTH) {
                     codeLength++;
                     evictions += dictionary.getEvictions();
                     totalEvictions += dictionary.getEvictions();
