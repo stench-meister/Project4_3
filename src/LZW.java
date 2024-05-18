@@ -194,7 +194,4 @@
          return numberOfCompressions;
      }
  }
-    public int getNumberOfCompressions() {
-        return numberOfCompressions;
-    }
-}
+
