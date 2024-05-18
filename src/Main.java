@@ -7,6 +7,12 @@
  * and compresses the content. It outputs the compressed data to compressed.bin,
  * decompresses data to decompressed.txt, and displays statistics
  * 
+ * 
+ * It was taking 10 minutes for the decompressed to work and outputed the right kibibyytes
+ * and actually matched the original file, but after running it for awhile it now takes less 
+ * than a second but under 500 kibibytes / doesnt actually match the orginal but claims to
+ * which we cant figure out yet. We will be working on it after the submission deadline.
+ * So we will submit another version if we figure out how to correctly do it
  */
 import java.nio.file.Files;
 import java.nio.file.Paths;
@@ -197,10 +203,6 @@ public class Main {
             }
             builder.append(array[i]);
         }
-        builder.append("]");
-        return builder.toString();
-    }
-}
         builder.append("]");
         return builder.toString();
     }
