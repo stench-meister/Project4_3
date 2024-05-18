@@ -6,6 +6,7 @@
  * algorithm. It reads in input from a text file specified as a command line argument
  * and compresses the content. It outputs the compressed data to compressed.bin,
  * decompresses data to decompressed.txt, and displays statistics
+ * 
  */
 import java.nio.file.Files;
 import java.nio.file.Paths;
@@ -19,7 +20,7 @@ public class Main {
             System.out.println("Usage: java Main <c|d> <inputfile> <outputfile>");
             return;
         }
-        // testLZW();
+        testLZW(); 
         testMyCuckooTable();
 
         String command = args[0];
@@ -52,7 +53,7 @@ public class Main {
             int totalCodes = compressedSize / codeLength;
 
             // Output encoding information
-            System.out.println("**** ENCODING ****");
+            System.out.println("\n**** ENCODING ****");
             System.out.println("total number of LZW codes: " + totalCodes);
             System.out.println("compressed size: " + compressedSize + " bits = " + (compressedSize / 8) + " bytes = " + (compressedSize / 8192) + " kibibytes.");
             System.out.println("compression ratio: " + String.format("%.2f", compressionRatio) + "%");
@@ -61,6 +62,14 @@ public class Main {
             System.out.println("encoding time: " + (endEncode - startEncode) + ".0 milliseconds");
         } else if (command.equals("d")) {
             // Decompress
+            System.out.println("Input file: " + inputFile);
+            long startRead = System.currentTimeMillis();
+            String allText = readFile(inputFile);
+            long endRead = System.currentTimeMillis();
+            int originalSize = allText.getBytes().length * 8; // in bits
+            System.out.println("original length: " + originalSize / 8 + " bytes = " + originalSize / 8192 + " kibibytes.");
+            System.out.println("Reading time: " + (endRead - startRead) + ".0 milliseconds");
+
             byte[] compressed = readBinaryFile(inputFile);
             long startDecode = System.currentTimeMillis();
             String fullText = lzw.decompress(compressed);
@@ -68,22 +77,23 @@ public class Main {
             writeFile(outputFile, fullText);
 
             // Output decoding information
-            System.out.println("**** DECODING ****");
+            System.out.println("\n**** DECODING ****");
             System.out.println("decoded length: " + fullText.getBytes().length + " bytes = " + (fullText.getBytes().length / 1024) + " kibibytes.");
             System.out.println("decoding time: " + (endDecode - startDecode) + ".0 milliseconds");
 
             // Compare the decompressed file with the original
-            String original;
+            String original = readFile(outputFile);
+            /*String original;
             if (command.equals("c")) {
                 original = readFile(inputFile);
             } else {
                 original = readFile(outputFile);
-            }
+            }*/
             if (original.equals(fullText)) {
-                System.out.println("**** COMPARING ****");
+                System.out.println("\n**** COMPARING ****");
                 System.out.println("Decompressed file MATCHES the original!");
             } else {
-                System.out.println("**** COMPARING ****");
+                System.out.println("\n**** COMPARING ****");
                 System.out.println("Decompressed file does NOT match the original!");
             }
         } else {
@@ -125,6 +135,7 @@ public class Main {
         }
     }
     public static void testLZW() {
+        System.out.println("Testing LZW.java\n");
         LZW lzw = new LZW();
 
         // Test strings for compression and decompression
@@ -154,6 +165,7 @@ public class Main {
     }
 
     public static void testMyCuckooTable() {
+        System.out.println("Testing MyCuckooTable.java\n");
         MyCuckooTable<String, String> table = new MyCuckooTable<>();
 
         // Test the put method
@@ -173,7 +185,7 @@ public class Main {
         table.reset();
         System.out.println("key1: " + table.get("key1")); // Should print "null"
         System.out.println("key2: " + table.get("key2")); // Should print "null"
-        System.out.println("key3: " + table.get("key3")); // Should print "null"
+        System.out.println("key3: " + table.get("key3") + "\n"); // Should print "null"
     }
 
     private static String byteArrayToString(byte[] array) {
@@ -185,6 +197,10 @@ public class Main {
             }
             builder.append(array[i]);
         }
+        builder.append("]");
+        return builder.toString();
+    }
+}
         builder.append("]");
         return builder.toString();
     }
