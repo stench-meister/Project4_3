@@ -194,4 +194,3 @@
          return numberOfCompressions;
      }
  }
-
